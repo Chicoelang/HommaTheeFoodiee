@@ -1,14 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 import { Menu } from '@/types';
-
-const MENUS_KEY = 'menus';
+import { QUERY_KEYS } from '@/lib/queryKeys';
 
 export function useMenus(restaurantId: string) {
   const supabase = createClient();
 
   return useQuery({
-    queryKey: [MENUS_KEY, restaurantId],
+    queryKey: QUERY_KEYS.MENUS_BY_RESTAURANT(restaurantId),
     queryFn: async () => {
       const { data, error } = await supabase
         .from('menus')
@@ -26,7 +25,7 @@ export function useAllMenus() {
   const supabase = createClient();
 
   return useQuery({
-    queryKey: [MENUS_KEY, 'all'],
+    queryKey: QUERY_KEYS.MENUS_ALL,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('menus')
@@ -44,13 +43,19 @@ export function useCreateMenu() {
 
   return useMutation({
     mutationFn: async (menu: Omit<Menu, 'id' | 'created_at'>) => {
-      const { data, error } = await supabase.from('menus').insert(menu as any).select().single();
+      const { data, error } = await supabase
+        .from('menus')
+        .insert(menu as any)
+        .select()
+        .single();
       if (error) throw error;
       return data as unknown as Menu;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, data.restaurant_id] });
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, 'all'] });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MENUS_BY_RESTAURANT(data.restaurant_id),
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MENUS_ALL });
     },
   });
 }
@@ -71,8 +76,10 @@ export function useUpdateMenu() {
       return data as unknown as Menu;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, data.restaurant_id] });
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, 'all'] });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MENUS_BY_RESTAURANT(data.restaurant_id),
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MENUS_ALL });
     },
   });
 }
@@ -88,8 +95,10 @@ export function useDeleteMenu() {
       return { restaurantId };
     },
     onSuccess: ({ restaurantId }) => {
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, restaurantId] });
-      queryClient.invalidateQueries({ queryKey: [MENUS_KEY, 'all'] });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MENUS_BY_RESTAURANT(restaurantId),
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MENUS_ALL });
     },
   });
 }

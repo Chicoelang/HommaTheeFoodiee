@@ -1,14 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 import { Category } from '@/types';
-
-const CATEGORIES_KEY = 'categories';
+import { QUERY_KEYS } from '@/lib/queryKeys';
 
 export function useCategories() {
   const supabase = createClient();
 
   return useQuery({
-    queryKey: [CATEGORIES_KEY],
+    queryKey: QUERY_KEYS.CATEGORIES,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('categories')
@@ -35,7 +34,7 @@ export function useCreateCategory() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CATEGORIES_KEY] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CATEGORIES });
     },
   });
 }
@@ -56,7 +55,7 @@ export function useUpdateCategory() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CATEGORIES_KEY] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CATEGORIES });
     },
   });
 }
@@ -71,7 +70,7 @@ export function useDeleteCategory() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CATEGORIES_KEY] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CATEGORIES });
     },
   });
 }

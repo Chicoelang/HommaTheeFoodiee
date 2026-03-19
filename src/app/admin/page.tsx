@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAdminStats } from '@/hooks/useAdminStats';
+import { useAdminStats } from '../../hooks/useAdminStats';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { UtensilsCrossed, Tag, Users, MessageSquare, ArrowUpRight, TrendingUp } from 'lucide-react';
 

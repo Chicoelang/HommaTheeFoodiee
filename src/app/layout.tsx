@@ -1,8 +1,7 @@
+// src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ToastContainer } from '@/components/providers/ToastContainer';
@@ -10,28 +9,33 @@ import { SiteShell } from '@/components/layout/SiteShell';
 
 export const dynamic = 'force-dynamic';
 
-const inter = Inter({ subsets: ['latin'] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
-    default: 'HoomaFoodie – Restaurant Directory',
+    default: 'HoomaFoodie – Direktori Kuliner Semarang',
     template: '%s | HoomaFoodie',
   },
   description:
-    'Discover the best restaurants in your city. Read reviews, explore menus, and find your next favorite dining spot.',
-  keywords: ['restaurant', 'food', 'dining', 'reviews', 'menu', 'culinary directory'],
+    'Temukan restoran terbaik di Semarang. Baca ulasan, jelajahi menu, dan nikmati pengalaman kuliner yang tak terlupakan.',
+  keywords: ['restoran', 'kuliner', 'semarang', 'makanan', 'ulasan', 'menu', 'food directory'],
   openGraph: {
     type: 'website',
-    title: 'HoomaFoodie – Restaurant Directory',
-    description: 'Discover the best restaurants in your city.',
+    title: 'HoomaFoodie – Direktori Kuliner Semarang',
+    description: 'Temukan restoran terbaik di Semarang.',
     siteName: 'HoomaFoodie',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="id" className={plusJakartaSans.variable}>
+      <body className={plusJakartaSans.className}>
         <QueryProvider>
           <AuthProvider>
             <SiteShell>{children}</SiteShell>

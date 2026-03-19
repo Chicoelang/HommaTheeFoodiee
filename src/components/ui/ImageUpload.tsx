@@ -1,3 +1,4 @@
+// src/components/ui/ImageUpload.tsx
 'use client';
 
 import { useState, useRef } from 'react';
@@ -26,7 +27,7 @@ export function ImageUpload({ value, onChange, bucket }: ImageUploadProps) {
       const url = await uploadImage(file, bucket);
       onChange(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      setError(err instanceof Error ? err.message : 'Upload gagal');
     } finally {
       setIsUploading(false);
       if (inputRef.current) inputRef.current.value = '';
@@ -36,15 +37,21 @@ export function ImageUpload({ value, onChange, bucket }: ImageUploadProps) {
   return (
     <div className="space-y-2">
       {value ? (
-        <div className="relative inline-block">
+        <div className="relative inline-block w-full">
           <div className="relative w-full h-48 rounded-xl overflow-hidden border border-gray-200">
-            <Image src={value} alt="Uploaded image" fill className="object-cover" unoptimized />
+            <Image
+              src={value}
+              alt="Uploaded image"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 600px"
+            />
           </div>
           <button
             type="button"
             onClick={() => onChange(null)}
             className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
-            aria-label="Remove image"
+            aria-label="Hapus gambar"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -66,9 +73,9 @@ export function ImageUpload({ value, onChange, bucket }: ImageUploadProps) {
             <Upload className="w-6 h-6" />
           )}
           <span className="text-sm font-medium">
-            {isUploading ? 'Uploading...' : 'Click to upload image'}
+            {isUploading ? 'Mengunggah...' : 'Klik untuk upload gambar'}
           </span>
-          <span className="text-xs text-gray-400">PNG, JPG, WebP up to 5MB</span>
+          <span className="text-xs text-gray-400">PNG, JPG, WebP maks. 5MB</span>
         </button>
       )}
       <input
@@ -77,7 +84,7 @@ export function ImageUpload({ value, onChange, bucket }: ImageUploadProps) {
         accept="image/jpeg,image/png,image/webp"
         onChange={handleFileChange}
         className="hidden"
-        aria-label="Upload image"
+        aria-label="Upload gambar"
       />
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
