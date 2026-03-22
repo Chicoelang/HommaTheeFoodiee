@@ -19,6 +19,7 @@ import { AdminFormField, AdminSelect } from '@/components/admin/AdminFormField';
 import { Pencil, Trash2, Plus, BookOpen } from 'lucide-react';
 import { Menu } from '@/types';
 import { formatCurrency } from '@/lib/utils';
+import { Pagination } from '@/components/ui/Pagination';
 
 const menuSchema = z.object({
   restaurant_id: z.string().min(1, 'Restoran wajib dipilih'),
@@ -226,9 +227,11 @@ export default function AdminMenusPage() {
 
           {totalPages > 1 && (
             <div className="flex justify-center">
-              <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                <span>Halaman {menuPage} dari {totalPages}</span>
-              </div>
+              <Pagination
+              currentPage={menuPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setMenuPage(page)}
+            />
             </div>
           )}
         </>

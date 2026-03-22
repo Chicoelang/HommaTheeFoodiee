@@ -2,6 +2,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { UtensilsCrossed } from 'lucide-react';
 import { Menu } from '@/types';
 import { MenuCardSkeleton } from '@/components/ui/Skeleton';
@@ -14,7 +15,7 @@ interface MenuTabProps {
   isLoading: boolean;
 }
 
-// Warna placeholder berdasarkan nama item
+// Warna gradient berdasarkan huruf pertama nama menu
 const PLACEHOLDER_GRADIENTS = [
   'from-orange-400 to-red-400',
   'from-amber-400 to-orange-500',
@@ -25,6 +26,41 @@ const PLACEHOLDER_GRADIENTS = [
 
 function getGradient(name: string): string {
   return PLACEHOLDER_GRADIENTS[name.charCodeAt(0) % PLACEHOLDER_GRADIENTS.length];
+}
+
+// Komponen gambar menu:
+// - Kalau image_url di database diisi URL foto asli → tampilkan foto
+// - Kalau kosong / placeholder dummy → tampilkan gradient warna
+function MenuImage({ src, alt }: { src: string | null; alt: string }) {
+  const [imgError, setImgError] = useState(false);
+
+  const isValidUrl =
+    src &&
+    src !== 'https://via.placeholder.com/150' &&
+    src !== 'https://placehold.co/150x150';
+
+  if (!isValidUrl || imgError) {
+    return (
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${getGradient(alt)} 
+                    flex items-center justify-center`}
+      >
+        <UtensilsCrossed className="w-8 h-8 text-white/60" />
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={src!}
+      alt={alt}
+      fill
+      className="object-cover"
+      sizes="96px"
+      unoptimized
+      onError={() => setImgError(true)}
+    />
+  );
 }
 
 export function MenuTab({ menus, isLoading }: MenuTabProps) {
@@ -63,27 +99,12 @@ export function MenuTab({ menus, isLoading }: MenuTabProps) {
                          bg-white shadow-sm hover:shadow-md 
                          transition-colors duration-200 cursor-default"
             >
-              {/* Item image */}
+              {/* Gambar menu */}
               <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                {item.image_url ? (
-                  <Image
-                    src={item.image_url}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                    sizes="96px"
-                  />
-                ) : (
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${getGradient(item.name)} 
-                                flex items-center justify-center`}
-                  >
-                    <UtensilsCrossed className="w-8 h-8 text-white/60" />
-                  </div>
-                )}
+                <MenuImage src={item.image_url} alt={item.name} />
               </div>
 
-              {/* Item info */}
+              {/* Info menu */}
               <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                 <div>
                   <h4 className="font-bold text-gray-900 text-sm leading-snug line-clamp-1 mb-1">
@@ -101,7 +122,7 @@ export function MenuTab({ menus, isLoading }: MenuTabProps) {
                     {formatCurrency(item.price)}
                   </span>
 
-                  {/* "+" indicator — visual delight, tidak fungsional (no cart) */}
+                  {/* Tombol "+" — visual, tidak fungsional */}
                   <div
                     className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 
                                flex items-center justify-center shadow-md shadow-orange-200

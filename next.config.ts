@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
         hostname: '**.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+         protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
     ],
     // Format modern untuk kompresi lebih baik
     formats: ['image/avif', 'image/webp'],
