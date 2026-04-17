@@ -58,6 +58,18 @@ export function ReviewCard({ review, onDelete }: ReviewCardProps) {
     setTimeout(() => setVoteAnimating(false), 500);
   };
 
+  let mentionedMenus: string[] = [];
+  let displayComment = review.comment || '';
+
+  if (displayComment.startsWith('Mengulas Menu: ')) {
+    const parts = displayComment.split('\n\n');
+    if (parts.length > 1) {
+      const menuString = parts[0].replace('Mengulas Menu: ', '').trim();
+      mentionedMenus = menuString.split(',').map(m => m.trim()).filter(Boolean);
+      displayComment = parts.slice(1).join('\n\n');
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -121,9 +133,21 @@ export function ReviewCard({ review, onDelete }: ReviewCardProps) {
       </div>
 
       {/* ── Comment ── */}
-      {review.comment && (
-        <p className="text-sm text-gray-700 leading-relaxed pl-[52px]">
-          {review.comment}
+      {mentionedMenus.length > 0 && (
+        <div className="pl-[52px] flex flex-wrap gap-1.5 pb-1">
+          {mentionedMenus.map((m) => (
+            <span
+              key={m}
+              className="inline-flex items-center px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 text-[10px] font-semibold tracking-wide border border-orange-100"
+            >
+              {m}
+            </span>
+          ))}
+        </div>
+      )}
+      {displayComment && (
+        <p className="text-sm text-gray-700 leading-relaxed pl-[52px] whitespace-pre-wrap">
+          {displayComment}
         </p>
       )}
 

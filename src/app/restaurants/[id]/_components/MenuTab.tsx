@@ -13,6 +13,7 @@ import { StaggerGrid, StaggerItem } from '@/components/providers/MotionProvider'
 interface MenuTabProps {
   menus: Menu[] | undefined;
   isLoading: boolean;
+  onReviewClick?: (menu: Menu) => void;
 }
 
 // Warna gradient berdasarkan huruf pertama nama menu
@@ -63,7 +64,7 @@ function MenuImage({ src, alt }: { src: string | null; alt: string }) {
   );
 }
 
-export function MenuTab({ menus, isLoading }: MenuTabProps) {
+export function MenuTab({ menus, isLoading, onReviewClick }: MenuTabProps) {
   if (isLoading) {
     return (
       <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -122,13 +123,14 @@ export function MenuTab({ menus, isLoading }: MenuTabProps) {
                     {formatCurrency(item.price)}
                   </span>
 
-                  {/* Tombol "+" — visual, tidak fungsional */}
+                  {/* Tombol "+" — pergi ke ulasan */}
                   <div
+                    onClick={() => onReviewClick?.(item)}
                     className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 
                                flex items-center justify-center shadow-md shadow-orange-200
                                hover:from-orange-600 hover:to-red-500 transition-all duration-200
                                cursor-pointer select-none"
-                    title="Detail menu"
+                    title="Beri Ulasan / Lihat Ulasan"
                   >
                     <svg
                       className="w-4 h-4 text-white"

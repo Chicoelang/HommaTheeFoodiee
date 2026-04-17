@@ -127,26 +127,6 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-
-            {/* App badge mock */}
-            <div className="mt-5 space-y-2">
-              <div className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700
-                              transition-colors rounded-xl px-3 py-2.5 cursor-pointer">
-                <div className="text-lg select-none">🍎</div>
-                <div>
-                  <p className="text-[10px] text-gray-500 leading-none">Download di</p>
-                  <p className="text-xs font-bold text-white leading-tight">App Store</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700
-                              transition-colors rounded-xl px-3 py-2.5 cursor-pointer">
-                <div className="text-lg select-none">🤖</div>
-                <div>
-                  <p className="text-[10px] text-gray-500 leading-none">Tersedia di</p>
-                  <p className="text-xs font-bold text-white leading-tight">Google Play</p>
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>

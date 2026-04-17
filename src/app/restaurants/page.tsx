@@ -1,7 +1,8 @@
 // src/app/restaurants/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, UtensilsCrossed, X, ChevronDown } from 'lucide-react';
 import { useRestaurants } from '@/hooks/useRestaurants';
 import { useCategories } from '@/hooks/useCategories';
@@ -29,12 +30,21 @@ const SORT_OPTIONS: { value: SortOption; label: string; icon: string }[] = [
 
 const PAGE_SIZE = 12;
 
-export default function RestaurantsPage() {
+function RestaurantsContent() {
+  const searchParams = useSearchParams();
+  const urlCategoryId = searchParams.get('categoryId');
+
   const [searchInput, setSearchInput] = useState('');
-  const [categoryId, setCategoryId] = useState('');
+  const [categoryId, setCategoryId] = useState(urlCategoryId || '');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    if (urlCategoryId !== null) {
+      setCategoryId(urlCategoryId);
+    }
+  }, [urlCategoryId]);
 
   const debouncedSearch = useDebounce(searchInput, 400);
 
@@ -342,5 +352,17 @@ export default function RestaurantsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function RestaurantsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-400 font-medium">Memuat restoran...</div>
+      </div>
+    }>
+      <RestaurantsContent />
+    </Suspense>
   );
 }

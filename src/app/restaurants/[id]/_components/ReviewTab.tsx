@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, UtensilsCrossed, X } from 'lucide-react';
 import { useCreateReview, useDeleteReview } from '../../../../hooks/useReviews';
 import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
@@ -12,16 +12,19 @@ import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { ReviewCard } from '@/components/restaurant/ReviewCard';
 import { ReviewSkeleton } from '@/components/ui/Skeleton';
-import { Review } from '@/types';
+import { Review, Menu } from '@/types';
 
 interface ReviewTabProps {
   restaurantId: string;
   reviews: Review[] | undefined;
   isLoading: boolean;
   isError: boolean;
+  selectedMenus?: Menu[];
+  onRemoveSelectedMenu?: (menuId: string) => void;
+  onClearSelectedMenus?: () => void;
 }
 
-export function ReviewTab({ restaurantId, reviews, isLoading, isError }: ReviewTabProps) {
+export function ReviewTab({ restaurantId, reviews, isLoading, isError, selectedMenus = [], onRemoveSelectedMenu, onClearSelectedMenus }: ReviewTabProps) {
   const { user } = useAuthStore();
   const { addToast, openConfirmModal } = useUIStore();
 
@@ -37,13 +40,20 @@ export function ReviewTab({ restaurantId, reviews, isLoading, isError }: ReviewT
       addToast('warning', 'Silakan pilih rating terlebih dahulu');
       return;
     }
+    
+    // Gabungkan info menu ke dalam komentar sebelum dikirim
+    const finalComment = selectedMenus.length > 0 
+      ? `Mengulas Menu: ${selectedMenus.map(m => m.name).join(', ')}\n\n${comment}`
+      : comment;
+
     createReview(
-      { restaurant_id: restaurantId, user_id: user!.id, rating, comment },
+      { restaurant_id: restaurantId, user_id: user!.id, rating, comment: finalComment },
       {
         onSuccess: () => {
           addToast('success', 'Ulasan berhasil dikirim!');
           setRating(0);
           setComment('');
+          onClearSelectedMenus?.();
         },
         onError: () => addToast('error', 'Gagal mengirim ulasan'),
       }
@@ -68,6 +78,35 @@ export function ReviewTab({ restaurantId, reviews, isLoading, isError }: ReviewT
       {user ? (
         <form onSubmit={handleSubmit} className="mb-6 p-4 bg-orange-50 rounded-xl space-y-3">
           <h3 className="font-semibold text-gray-900 text-sm">Tulis Ulasan</h3>
+          
+          {selectedMenus && selectedMenus.length > 0 && (
+            <div className="flex flex-col gap-2 bg-white p-3 rounded-lg border border-orange-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <UtensilsCrossed className="w-4 h-4 text-orange-500" />
+                  <span>Mengulas {selectedMenus.length} menu:</span>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={onClearSelectedMenus}
+                  className="text-xs text-gray-400 hover:text-red-500 font-medium"
+                >
+                  Hapus Semua
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {selectedMenus.map((menu) => (
+                  <span key={menu.id} className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                    {menu.name}
+                    <button type="button" onClick={() => onRemoveSelectedMenu?.(menu.id)} className="hover:text-red-500">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Rating kamu:</span>
             <StarRating

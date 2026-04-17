@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useUIStore } from '@/store/uiStore';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils';
+import { Menu } from '@/types';
 import { RestaurantHeader, RestaurantHeaderSkeleton } from './_components/RestaurantHeader';
 import { RestaurantInfo } from './_components/RestaurantInfo';
 import { MenuTab } from './_components/MenuTab';
@@ -27,6 +28,7 @@ export default function RestaurantDetailPage() {
   const { addToast } = useUIStore();
 
   const [activeTab, setActiveTab] = useState<Tab>('menu');
+  const [selectedMenusToReview, setSelectedMenusToReview] = useState<Menu[]>([]);
 
   const { data: restaurant, isLoading: restaurantLoading } = useRestaurant(id);
   const { data: menus, isLoading: menusLoading } = useMenus(id);
@@ -126,13 +128,30 @@ export default function RestaurantDetailPage() {
 
               {/* Tab content */}
               {activeTab === 'menu' ? (
-                <MenuTab menus={menus} isLoading={menusLoading} />
+                <MenuTab 
+                  menus={menus} 
+                  isLoading={menusLoading} 
+                  onReviewClick={(menu: Menu) => {
+                    setSelectedMenusToReview((prev) => {
+                      if (prev.find(m => m.id === menu.id)) return prev;
+                      if (prev.length >= 5) {
+                        addToast('warning', 'Maksimal 5 menu yang bisa diulas bersamaan');
+                        return prev;
+                      }
+                      return [...prev, menu];
+                    });
+                    setActiveTab('reviews');
+                  }} 
+                />
               ) : (
                 <ReviewTab
                   restaurantId={id}
                   reviews={reviews}
                   isLoading={reviewsLoading}
                   isError={reviewsError}
+                  selectedMenus={selectedMenusToReview}
+                  onRemoveSelectedMenu={(menuId) => setSelectedMenusToReview(prev => prev.filter(m => m.id !== menuId))}
+                  onClearSelectedMenus={() => setSelectedMenusToReview([])}
                 />
               )}
             </div>
