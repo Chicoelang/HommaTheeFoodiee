@@ -63,7 +63,7 @@ export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useAdminStats();
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8 mr-6 ml-6 mt-4">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {statCards.map(({ key, label, icon: Icon, iconBg, href, change }) => (
