@@ -128,7 +128,7 @@ export default function AdminMenusPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 ml-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Menus</h1>
           {totalFiltered > 0 && (
@@ -141,7 +141,7 @@ export default function AdminMenusPage() {
       </div>
 
       {/* Filter */}
-      <div className="mb-4">
+      <div className="mb-4 ml-8">
         <AdminSelect
           value={filterRestaurant}
           onChange={(e) => { setFilterRestaurant(e.target.value); setMenuPage(1); }}
