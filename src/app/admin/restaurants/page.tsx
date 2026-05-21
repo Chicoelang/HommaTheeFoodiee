@@ -254,7 +254,7 @@ export default function AdminRestaurantsPage() {
 
         {/* ── Sticky search bar ── */}
         <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-8 py-4 flex-shrink-0">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 ml-6">
             <div>
               <h1 className="text-xl font-bold text-gray-900">Restaurants</h1>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -265,7 +265,7 @@ export default function AdminRestaurantsPage() {
 
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
-            <div className="relative flex-1">
+            <div className="relative flex-1 ml-6">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
